@@ -37,6 +37,19 @@ You can use a combined approach:
 
 If `MCP_CONFIG_FILE` is set, its values are used as defaults and ENV overrides them.
 
+## Environment variables
+Set environment variables in your shell or OS before starting the server.
+
+Windows PowerShell:
+- `setx MCP_AUTH_TOKEN "your_token"`
+- `setx MCP_CONFIG_FILE "D:\path\to\config.yaml"`
+- `setx GOOGLE_CLIENT_SECRETS_FILE "D:\path\to\oauth.keys.json"`
+
+macOS/Linux (bash/zsh):
+- `export MCP_AUTH_TOKEN="your_token"`
+- `export MCP_CONFIG_FILE="/path/to/config.yaml"`
+- `export GOOGLE_CLIENT_SECRETS_FILE="/path/to/oauth.keys.json"`
+
 ## Safety and responsibility
 Some operations require confirmation or run in dry-run mode:
 - Deleting emails, archiving, making files public.

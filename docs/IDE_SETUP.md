@@ -11,6 +11,7 @@ Use this common configuration template (replace placeholders with your values):
  - Replace `<PROJECT_PATH>` with the absolute path to your local clone.
  - Set `MCP_AUTH_TOKEN` to your own token value.
  - Set `MCP_CONFIG_FILE` to the absolute path of your `config.yaml`.
+ - If you already set environment variables in your OS, you can omit the `env` block.
 
 ```
 {
