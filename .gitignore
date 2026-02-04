@@ -1,0 +1,31 @@
+## Secrets and local config
+.env
+config.yaml
+config.yml
+
+## OAuth tokens and backups
+token.json
+token.pickle
+backups/
+
+## Logs
+*.log
+
+## Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+## Virtual environments
+.venv/
+venv/
+env/
+
+## OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
