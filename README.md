@@ -13,7 +13,7 @@ The codebase is split into modules to make it easier to read, extend, and publis
 
 ## Quick start
 1) Install dependencies:
-   - `pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib`
+   - `pip install -r requirements.txt`
    - MCP runtime/SDK: install the one required by your IDE/runtime
 
 2) Configure OAuth:
