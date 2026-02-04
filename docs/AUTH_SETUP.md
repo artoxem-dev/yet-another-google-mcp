@@ -1,20 +1,20 @@
-# Настройка OAuth
+# OAuth Setup
 
-1) Откройте Google Cloud Console: https://console.cloud.google.com/
-2) Создайте проект или выберите существующий.
-3) Включите нужные API:
+1) Open Google Cloud Console: https://console.cloud.google.com/
+2) Create a new project or select an existing one.
+3) Enable required APIs:
    - Google Drive API
    - Google Sheets API
    - Google Docs API
    - Gmail API
    - Google Calendar API
    - Google Apps Script API
-4) Создайте OAuth Client ID (Desktop app).
-5) Скачайте JSON и сохраните в путь, указанный в конфиге:
-   - `client_secrets_file` в `config.yaml`
-   - или `GOOGLE_CLIENT_SECRETS_FILE` в `.env`
-6) При первом запуске откроется окно авторизации.
-   Полученный токен будет сохранен в `token_file`.
+4) Create an OAuth Client ID (Desktop app).
+5) Download the JSON and save it to the path from config:
+   - `client_secrets_file` in `config.yaml`
+   - or `GOOGLE_CLIENT_SECRETS_FILE` in `.env`
+6) On first run, an authorization window will open.
+   The token will be saved to `token_file`.
 
-Если используете YAML-конфиг, убедитесь, что PyYAML установлен:
+If you use YAML config, install PyYAML:
 `pip install pyyaml`

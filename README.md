@@ -1,50 +1,52 @@
 # MCP Google Tools Server
 
-MCP сервер для работы с Google Drive, Sheets, Docs, Gmail, Calendar и Apps Script.
-Проект разделен на модули, чтобы было проще читать, расширять и публиковать.
+MCP server for Google Drive, Sheets, Docs, Gmail, Calendar, and Apps Script.
+The codebase is split into modules to make it easier to read, extend, and publish.
 
-## Возможности
-- Drive: поиск, перемещение, копирование, права доступа.
-- Sheets: чтение/запись, очистка диапазонов, find/replace, экспорт CSV.
-- Docs: чтение, создание, заполнение шаблонов, экспорт PDF.
-- Gmail: черновики, отправка, поиск, удаление с подтверждением.
-- Calendar: события, свободные слоты, встречи с подтверждением.
-- Apps Script: чтение, подготовка обновлений с backup и rollback.
+## Features
+- Drive: search, move, copy, permissions.
+- Sheets: read/write, clear ranges, find/replace, CSV export.
+- Docs: read, create, template fill, PDF export.
+- Gmail: drafts, send, search, delete with confirmation.
+- Calendar: events, free slots, meetings with confirmation.
+- Apps Script: read, staged updates with backup and rollback.
 
-## Быстрый старт
-1) Установите зависимости:
+## Quick start
+1) Install dependencies:
    - `pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib`
-   - MCP пакет: установите ваш MCP runtime/SDK (зависит от среды запуска)
+   - MCP runtime/SDK: install the one required by your IDE/runtime
 
-2) Настройте OAuth:
-   - Создайте OAuth Client ID в Google Cloud Console.
-   - Скачайте файл `oauth.keys.json` и положите его в удобный путь.
-   - Подробно: см. `docs/AUTH_SETUP.md`.
+2) Configure OAuth:
+   - Create an OAuth Client ID in Google Cloud Console.
+   - Download `oauth.keys.json` and place it in a convenient path.
+   - See: `docs/AUTH_SETUP.md`.
 
-3) Настройте конфигурацию:
-   - Скопируйте `.env.example` → `.env`.
-   - Скопируйте `config.example.yaml` → `config.yaml`.
-   - Укажите пути и `MCP_AUTH_TOKEN`.
+3) Configure the server:
+   - Copy `.env.example` → `.env`.
+   - Copy `config.example.yaml` → `config.yaml`.
+   - Set paths and `MCP_AUTH_TOKEN`.
 
-4) Запустите сервер:
+4) Run the server:
    - `python server.py`
 
-## Конфигурация
-Поддерживается комбинированный подход:
+## Configuration
+You can use a combined approach:
 - ENV: `MCP_AUTH_TOKEN`, `GOOGLE_CLIENT_SECRETS_FILE`, `GOOGLE_TOKEN_FILE`,
   `GOOGLE_BACKUP_DIR`, `GOOGLE_LOG_FILE`, `MCP_CONFIG_FILE`.
-- Config-файл: `client_secrets_file`, `token_file`, `backup_dir`, `log_file`, `scopes`.
+- Config file: `client_secrets_file`, `token_file`, `backup_dir`, `log_file`, `scopes`.
 
-Если указан `MCP_CONFIG_FILE`, его значения будут использованы как дефолты,
-а ENV переменные их переопределят.
+If `MCP_CONFIG_FILE` is set, its values are used as defaults and ENV overrides them.
 
-## Безопасность
-Некоторые операции требуют подтверждения или выполняются в dry-run режиме:
-- Удаление писем, архивирование, публичный доступ к файлам.
-- Очистка больших диапазонов в Sheets.
-Подробнее: `docs/SECURITY.md`.
+## Safety and responsibility
+Some operations require confirmation or run in dry-run mode:
+- Deleting emails, archiving, making files public.
+- Clearing large ranges in Sheets.
+See: `docs/SECURITY.md`.
 
-## Документация
-- `docs/AUTH_SETUP.md` — настройка OAuth.
-- `docs/TOOLS_REFERENCE.md` — параметры всех MCP tools.
-- `docs/SECURITY.md` — защитные механизмы.
+You are responsible for understanding the risks and the consequences of actions
+performed by this server. Use it at your own discretion and follow your
+organization's security policies.
+
+## Documentation
+- English: `docs/AUTH_SETUP.md`, `docs/TOOLS_REFERENCE.md`, `docs/SECURITY.md`
+- Russian: `docs/ru/AUTH_SETUP.md`, `docs/ru/TOOLS_REFERENCE.md`, `docs/ru/SECURITY.md`
