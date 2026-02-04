@@ -23,21 +23,25 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from mcp_google.config import load_config
 
 # Configuration
-CLIENT_SECRETS_FILE = r"C:\Users\artox\.google\oauth.keys.json"
-TOKEN_FILE = r"C:\Users\artox\.google\token.json"
-BACKUP_DIR = r"C:\Users\artox\.google\backups"
-MCP_AUTH_TOKEN = os.environ.get("MCP_AUTH_TOKEN")
+config = load_config()
+CLIENT_SECRETS_FILE = config.client_secrets_file
+TOKEN_FILE = config.token_file
+BACKUP_DIR = config.backup_dir
+LOG_FILE = config.log_file
+MCP_AUTH_TOKEN = config.mcp_auth_token
 
 # Setup logging
+log_handlers = [logging.StreamHandler()]
+if LOG_FILE:
+    log_handlers.insert(0, logging.FileHandler(LOG_FILE))
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(r"C:\Users\artox\.google\mcp_operations.log"),
-        logging.StreamHandler()
-    ]
+    handlers=log_handlers
 )
 logger = logging.getLogger("GoogleToolsMCP")
 
@@ -47,16 +51,7 @@ pending_operations = {}
 # Email validation regex
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
-SCOPES = [
-    'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/script.projects',
-    'https://www.googleapis.com/auth/script.deployments',
-    'https://www.googleapis.com/auth/documents',
-    'https://www.googleapis.com/auth/gmail.modify',
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/gmail.readonly'
-]
+SCOPES = config.scopes
 
 def get_creds():
     """Gets credentials using OAuth 2.0 User Flow."""
@@ -76,7 +71,11 @@ def get_creds():
 
         if not creds:
             if not os.path.exists(CLIENT_SECRETS_FILE):
-                 raise FileNotFoundError(f"Client secrets file not found at {CLIENT_SECRETS_FILE}")
+                 raise FileNotFoundError(
+                     "Client secrets file not found at "
+                     f"{CLIENT_SECRETS_FILE}. Set GOOGLE_CLIENT_SECRETS_FILE "
+                     "or config.yaml client_secrets_file."
+                 )
                  
             flow = InstalledAppFlow.from_client_secrets_file(
                 CLIENT_SECRETS_FILE, SCOPES)
