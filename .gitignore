@@ -6,6 +6,8 @@ config.yml
 ## OAuth tokens and backups
 token.json
 token.pickle
+oauth.keys.json
+*.keys.json
 backups/
 
 ## Logs
@@ -29,3 +31,4 @@ env/
 Thumbs.db
 .idea/
 .vscode/
+.cursor/
