@@ -3,6 +3,8 @@
 Below is a list of tools available in this MCP server.
 All calls require the server to run with `MCP_AUTH_TOKEN` set in the environment.
 
+For usage examples, see the "Usage examples" section in the main README.
+
 ## Drive
 - `find_files(query)`
   - Search by name or full Drive query.

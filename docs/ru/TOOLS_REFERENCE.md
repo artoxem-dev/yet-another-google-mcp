@@ -3,6 +3,61 @@
 Ниже перечислены инструменты (tools), доступные в MCP сервере.
 Все вызовы требуют, чтобы сервер был запущен с `MCP_AUTH_TOKEN` в окружении.
 
+## Примеры использования
+
+### Базовые операции
+```
+# Получить адрес Gmail (smoke test)
+Tool: get_gmail_profile
+Результат: ✅ Authenticated Gmail address: user@example.com
+
+# Поиск файлов в Drive
+Tool: find_files
+Аргументы: {"query": "name contains 'бюджет'"}
+Результат: Found files:
+- Бюджет_2026.xlsx (ID: 1a2b3c...) [application/vnd.google-apps.spreadsheet]
+
+# Чтение Google таблицы
+Tool: read_sheet
+Аргументы: {
+  "spreadsheet_id": "1a2b3c4d5e...",
+  "range_name": "Лист1!A1:C10"
+}
+Результат: Data from sheet (range Лист1!A1:C10):
+| Имя | Email | Статус |
+| Иван | ivan@example.com | Активен |
+...
+
+# Создание черновика письма (безопасно по умолчанию)
+Tool: send_email
+Аргументы: {
+  "to": "kollega@example.com",
+  "subject": "Заметки со встречи",
+  "body_text": "Вот заметки с нашей встречи...",
+  "draft_mode": true
+}
+Результат: 📝 EMAIL DRAFT CREATED (ID: r1234...)
+⚠️ Email saved as DRAFT, not sent yet.
+Для отправки: send_email(..., draft_mode=False)
+```
+
+### Функции безопасности
+```
+# Деструктивные операции требуют подтверждения
+Tool: delete_email
+Аргументы: {"message_id": "18abc...", "confirm": false}
+Результат: ⚠️ CONFIRMATION REQUIRED
+This will permanently delete email 18abc...
+To proceed, call this tool again with confirm=True
+
+# Массовые операции используют dry-run режим
+Tool: clear_range
+Аргументы: {"spreadsheet_id": "1a2b...", "range_name": "Лист1!A1:Z1000"}
+Результат: 🔍 DRY RUN: Large range detected (26,000 cells)
+Would clear range: Лист1!A1:Z1000
+To proceed: clear_range(..., confirm=True)
+```
+
 ## Drive
 - `find_files(query)`
   - Поиск по имени или по полноценному запросу Drive query.
