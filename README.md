@@ -11,6 +11,20 @@ The codebase is split into modules to make it easier to read, extend, and publis
 - Calendar: events, free slots, meetings with confirmation.
 - Apps Script: read, staged updates with backup and rollback.
 
+## Capabilities (full tool list)
+- Drive: `find_files`, `create_folder`, `move_file`, `share_file`, `drive_search_advanced`,
+  `drive_list_permissions`, `drive_revoke_public`, `drive_copy_file`.
+- Sheets: `read_sheet`, `append_row`, `update_sheet`, `create_spreadsheet`, `add_sheet`,
+  `clear_range`, `sheet_create_filter_view`, `sheet_export_csv`, `sheet_find_replace`,
+  `sheet_create_named_range`, `get_spreadsheet_meta`.
+- Docs: `read_doc`, `create_doc`, `append_to_doc`, `doc_fill_template`, `doc_export_pdf`.
+- Gmail: `send_email`, `send_draft`, `get_gmail_profile`, `create_draft`, `list_emails`,
+  `read_email`, `delete_email`, `batch_delete_emails`, `gmail_search_and_summarize`,
+  `gmail_archive`, `gmail_label_apply`.
+- Calendar: `list_events`, `create_event`, `calendar_find_free_slots`, `calendar_create_meeting`.
+- Apps Script: `create_script_project`, `get_script_content`, `prepare_script_update`,
+  `execute_operation`, `cancel_operation`, `restore_script_backup`.
+
 ## Quick start
 1) Install dependencies:
    - `pip install -r requirements.txt`
