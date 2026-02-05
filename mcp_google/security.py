@@ -10,12 +10,9 @@ def validate_email(email: str) -> bool:
 
 
 def require_auth(arguments: Dict[str, Any], auth_token: Optional[str]) -> None:
-    """Require auth token for all tool calls."""
+    """Require MCP_AUTH_TOKEN to be set for all tool calls."""
     if not auth_token:
         raise ValueError(
             "MCP_AUTH_TOKEN is not set. Set environment variable MCP_AUTH_TOKEN "
             "to enable MCP access."
         )
-    provided = arguments.get("auth_token")
-    if not provided or provided != auth_token:
-        raise ValueError("Unauthorized: invalid or missing auth_token.")

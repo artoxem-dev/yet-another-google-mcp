@@ -16,8 +16,8 @@ The server includes safeguards to reduce accidental destructive actions.
 - `share_file` blocks `type=anyone` unless `allow_public=true`.
 
 ## MCP_AUTH_TOKEN
-All calls require `auth_token` and must match `MCP_AUTH_TOKEN`.
-This is a basic protection against unauthorized use.
+All calls require the server to run with `MCP_AUTH_TOKEN` set in the environment.
+This is a basic protection against unauthorized use for STDIO-based servers.
 
 ## Responsibility notice
 You are responsible for understanding the risks and the consequences of

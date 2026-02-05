@@ -6,6 +6,7 @@ popular IDEs. Use absolute paths to avoid working directory issues.
 Before you start:
 - Make sure the server works locally (`python server.py`).
 - Configure `.env` and `config.yaml` as described in `README.md`.
+- For STDIO servers, do not write to stdout (use stderr or a file logger).
 
 Use this common configuration template (replace placeholders with your values):
  - Replace `<PROJECT_PATH>` with the absolute path to your local clone.
@@ -96,3 +97,6 @@ Format (VS Code uses `servers`, not `mcpServers`):
 If your IDE supports MCP stdio servers, look for an MCP provider configuration
 file and add the same command/args/env as above. The key name may differ
 (for example, `mcpServers` or `servers`).
+
+## Smoke check
+After connecting the server, call `get_gmail_profile()` to verify OAuth works.

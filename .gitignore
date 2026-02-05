@@ -1,7 +1,9 @@
 ## Secrets and local config
 .env
+.env.*
 config.yaml
 config.yml
+config.json
 
 ## OAuth tokens and backups
 token.json
@@ -9,9 +11,11 @@ token.pickle
 oauth.keys.json
 *.keys.json
 backups/
+.google/
 
 ## Logs
 *.log
+*.bak
 
 ## Python
 __pycache__/

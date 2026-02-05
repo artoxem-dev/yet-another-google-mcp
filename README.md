@@ -29,6 +29,13 @@ The codebase is split into modules to make it easier to read, extend, and publis
 4) Run the server:
    - `python server.py`
 
+## Smoke check
+After the server is connected in your MCP client, call `get_gmail_profile()`.
+If OAuth is configured, it should return the authenticated Gmail address.
+
+## STDIO logging note
+Do not write to stdout in STDIO servers. Use stderr or log to a file instead.
+
 ## Configuration
 You can use a combined approach:
 - ENV: `MCP_AUTH_TOKEN`, `GOOGLE_CLIENT_SECRETS_FILE`, `GOOGLE_TOKEN_FILE`,
