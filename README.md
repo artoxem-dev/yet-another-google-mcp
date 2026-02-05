@@ -25,6 +25,44 @@ The codebase is split into modules to make it easier to read, extend, and publis
 - Apps Script: `create_script_project`, `get_script_content`, `prepare_script_update`,
   `execute_operation`, `cancel_operation`, `restore_script_backup`.
 
+## Security & Access Control
+
+### Understanding OAuth Scopes
+This server requests access to your Google account through OAuth scopes. Think of scopes as permission levels:
+
+**Default configuration** (in `config.example.yaml`):
+- 📧 **Gmail**: Read, send, modify, and delete emails
+- 📁 **Drive**: Full access to files and folders
+- 📊 **Sheets/Docs**: Read and write spreadsheets and documents
+- 📅 **Calendar**: Manage events and meetings
+- ⚙️ **Apps Script**: Read and modify scripts
+
+### Recommended Setup Approaches
+
+**🧪 For testing and experimentation:**
+- Create a **separate Google account** for testing
+- Use the default scopes to explore all features
+- This way, your personal/work data stays separate
+
+**🔒 For production use:**
+- Review and **limit scopes** to only what you need
+- Example: If you only need to read sheets, use `auth/spreadsheets.readonly`
+- See `docs/SECURITY.md` for scope customization guide
+
+**🏢 For work accounts:**
+- Check with your organization's IT/security policies first
+- Consider using a service account with limited permissions
+- Keep audit logs of MCP server actions
+
+### Built-in Safety Features
+The server includes safeguards to prevent accidents:
+- 🛡️ **Confirmation required** for destructive operations (delete, archive)
+- 🔍 **Dry-run mode** for bulk operations (see examples below)
+- 📝 **Draft mode** for emails (safe by default)
+- ⚠️ **Public sharing blocked** unless explicitly allowed
+
+**Your AI agent will have access to the data you authorize.** The `MCP_AUTH_TOKEN` protects against unauthorized access from other processes, but the AI itself operates within the permissions you grant.
+
 ## Quick start
 1) Install dependencies:
    - `pip install -r requirements.txt`

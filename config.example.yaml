@@ -1,14 +1,36 @@
+# Path to your OAuth client secrets file (download from Google Cloud Console)
 client_secrets_file: "C:\\Users\\your_user\\.google\\oauth.keys.json"
+
+# Path where the OAuth token will be saved after authentication
 token_file: "C:\\Users\\your_user\\.google\\token.json"
+
+# Directory for Apps Script backups (created automatically)
 backup_dir: "C:\\Users\\your_user\\.google\\backups"
+
+# Optional: path to log file (logs operations for audit/debugging)
 log_file: "C:\\Users\\your_user\\.google\\mcp_operations.log"
+
+# MCP authentication token (change to a secure random value)
 mcp_auth_token: "change_me"
+
+# OAuth scopes define what data the server can access
+# Default: Full access to all services (good for testing)
+# For production: Review docs/SECURITY.md for minimal/read-only options
 scopes:
-  - "https://www.googleapis.com/auth/spreadsheets"
-  - "https://www.googleapis.com/auth/drive"
-  - "https://www.googleapis.com/auth/script.projects"
-  - "https://www.googleapis.com/auth/script.deployments"
-  - "https://www.googleapis.com/auth/documents"
-  - "https://www.googleapis.com/auth/gmail.modify"
-  - "https://www.googleapis.com/auth/calendar"
-  - "https://www.googleapis.com/auth/gmail.readonly"
+  - "https://www.googleapis.com/auth/spreadsheets"           # Read/write Google Sheets
+  - "https://www.googleapis.com/auth/drive"                   # Full access to Google Drive
+  - "https://www.googleapis.com/auth/script.projects"         # Apps Script projects
+  - "https://www.googleapis.com/auth/script.deployments"      # Apps Script deployments
+  - "https://www.googleapis.com/auth/documents"               # Read/write Google Docs
+  - "https://www.googleapis.com/auth/gmail.modify"            # Read/send/delete emails
+  - "https://www.googleapis.com/auth/calendar"                # Manage calendar events
+  - "https://www.googleapis.com/auth/gmail.readonly"          # Read-only Gmail access
+
+# Example: Read-only configuration (safer for exploration)
+# Uncomment and replace the scopes above with:
+# scopes:
+#   - "https://www.googleapis.com/auth/spreadsheets.readonly"
+#   - "https://www.googleapis.com/auth/drive.readonly"
+#   - "https://www.googleapis.com/auth/documents.readonly"
+#   - "https://www.googleapis.com/auth/gmail.readonly"
+#   - "https://www.googleapis.com/auth/calendar.readonly"

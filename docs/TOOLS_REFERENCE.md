@@ -3,7 +3,60 @@
 Below is a list of tools available in this MCP server.
 All calls require the server to run with `MCP_AUTH_TOKEN` set in the environment.
 
-For usage examples, see the "Usage examples" section in the main README.
+## Usage examples
+
+### Basic operations
+```
+# Get your Gmail address (smoke test)
+Tool: get_gmail_profile
+Result: ✅ Authenticated Gmail address: user@example.com
+
+# Search for files in Drive
+Tool: find_files
+Arguments: {"query": "name contains 'budget'"}
+Result: Found files:
+- Budget_2026.xlsx (ID: 1a2b3c...) [application/vnd.google-apps.spreadsheet]
+
+# Read a Google Sheet
+Tool: read_sheet
+Arguments: {
+  "spreadsheet_id": "1a2b3c4d5e...",
+  "range_name": "Sheet1!A1:C10"
+}
+Result: Data from sheet (range Sheet1!A1:C10):
+| Name | Email | Status |
+| John | john@example.com | Active |
+...
+
+# Create a draft email (safe by default)
+Tool: send_email
+Arguments: {
+  "to": "colleague@example.com",
+  "subject": "Meeting notes",
+  "body_text": "Here are the notes from our meeting...",
+  "draft_mode": true
+}
+Result: 📝 EMAIL DRAFT CREATED (ID: r1234...)
+⚠️ Email saved as DRAFT, not sent yet.
+To send: send_email(..., draft_mode=False)
+```
+
+### Safety features
+```
+# Destructive operations require confirmation
+Tool: delete_email
+Arguments: {"message_id": "18abc...", "confirm": false}
+Result: ⚠️ CONFIRMATION REQUIRED
+This will permanently delete email 18abc...
+To proceed, call this tool again with confirm=True
+
+# Large operations use dry-run mode
+Tool: clear_range
+Arguments: {"spreadsheet_id": "1a2b...", "range_name": "Sheet1!A1:Z1000"}
+Result: 🔍 DRY RUN: Large range detected (26,000 cells)
+Would clear range: Sheet1!A1:Z1000
+To proceed: clear_range(..., confirm=True)
+```
 
 ## Drive
 - `find_files(query)`
