@@ -66,6 +66,8 @@ The server includes safeguards to prevent accidents:
 
 ## Quick start
 
+**📖 Detailed OAuth setup:** [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md) — step-by-step guide with troubleshooting. Русская версия: [docs/ru/AUTH_SETUP.md](docs/ru/AUTH_SETUP.md)
+
 1) Install dependencies:
    ```
    pip install -r requirements.txt
@@ -74,7 +76,7 @@ The server includes safeguards to prevent accidents:
 2) Configure OAuth:
    - Create an OAuth Client ID in Google Cloud Console.
    - Download `oauth.keys.json` and place it in a convenient path.
-   - See: `docs/AUTH_SETUP.md`.
+   - **→ Full instructions:** [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md)
 
 3) Configure the server:
    - Copy or rename `config.example.yaml` to `config.yaml`.
