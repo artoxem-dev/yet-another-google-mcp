@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, List, Optional
 
@@ -14,7 +15,7 @@ from ..operations import (
 
 
 def create_script_project_handler(
-    config: Config, logger, title: str, parent_id: Optional[str] = None
+    config: Config, logger: logging.Logger, title: str, parent_id: Optional[str] = None
 ) -> str:
     try:
         creds = get_creds(config)
@@ -25,16 +26,17 @@ def create_script_project_handler(
             request["parentId"] = parent_id
 
         response = service.projects().create(body=request).execute()
+        script_id = response.get("scriptId")
         return (
             f"Script created: {response.get('title')} "
-            f"(ID: {response.get('scriptId')})\n"
-            f"URL: {response.get('scriptId')}"
+            f"(ID: {script_id})\n"
+            f"URL: https://script.google.com/d/{script_id}/edit"
         )
     except Exception as e:
         return f"Error creating script: {str(e)}"
 
 
-def get_script_content_handler(config: Config, logger, script_id: str) -> str:
+def get_script_content_handler(config: Config, logger: logging.Logger, script_id: str) -> str:
     try:
         creds = get_creds(config)
         service = build("script", "v1", credentials=creds)
@@ -53,7 +55,7 @@ def get_script_content_handler(config: Config, logger, script_id: str) -> str:
 
 
 def prepare_script_update_handler(
-    config: Config, logger, script_id: str, files: List[Dict[str, str]]
+    config: Config, logger: logging.Logger, script_id: str, files: List[Dict[str, str]]
 ) -> str:
     """STEP 1: Prepare script update with backup."""
     try:
@@ -112,7 +114,7 @@ def prepare_script_update_handler(
         return f"❌ Error preparing update: {str(e)}"
 
 
-def execute_operation_handler(config: Config, logger, operation_id: str) -> str:
+def execute_operation_handler(config: Config, logger: logging.Logger, operation_id: str) -> str:
     """STEP 2: Execute a prepared operation."""
     try:
         cleanup_expired_operations()
@@ -127,8 +129,12 @@ def execute_operation_handler(config: Config, logger, operation_id: str) -> str:
             service = build("script", "v1", credentials=creds)
 
             # Create backup file before applying changes
+            backup_data = {
+                "script_id": op["script_id"],
+                "files": op["backup"],
+            }
             backup_path = create_backup(
-                op["backup"], "script", op["script_id"], config.backup_dir, logger
+                backup_data, "script", op["script_id"], config.backup_dir, logger
             )
 
             # Execute update
@@ -162,7 +168,7 @@ def execute_operation_handler(config: Config, logger, operation_id: str) -> str:
         return f"❌ Error executing operation: {str(e)}"
 
 
-def cancel_operation_handler(config: Config, logger, operation_id: str) -> str:
+def cancel_operation_handler(config: Config, logger: logging.Logger, operation_id: str) -> str:
     """Cancel a prepared operation."""
     cleanup_expired_operations()
 
@@ -175,7 +181,7 @@ def cancel_operation_handler(config: Config, logger, operation_id: str) -> str:
 
 
 def restore_script_backup_handler(
-    config: Config, logger, backup_path: str
+    config: Config, logger: logging.Logger, backup_path: str
 ) -> str:
     """Restore script from backup file."""
     try:
@@ -188,18 +194,26 @@ def restore_script_backup_handler(
         with open(backup_path, "r", encoding="utf-8") as f:
             backup_data = json.load(f)
 
-        # Extract script_id from filename: backup_script_SCRIPTID_TIMESTAMP.json
-        filename = os.path.basename(backup_path)
-        parts = filename.split("_")
-        if len(parts) < 3:
-            return "❌ Invalid backup filename format"
-
-        script_id = parts[2]
+        # New format: {"script_id": "...", "files": [...]}
+        # Old format (fallback): plain list of files, script_id parsed from filename
+        if isinstance(backup_data, dict) and "script_id" in backup_data:
+            script_id = backup_data["script_id"]
+            files = backup_data["files"]
+        elif isinstance(backup_data, list):
+            # Legacy fallback: extract script_id from filename
+            filename = os.path.basename(backup_path)
+            parts = filename.split("_")
+            if len(parts) < 3:
+                return "❌ Invalid backup: missing script_id in data and filename"
+            script_id = parts[2]
+            files = backup_data
+        else:
+            return "❌ Invalid backup format"
 
         creds = get_creds(config)
         service = build("script", "v1", credentials=creds)
 
-        request = {"files": backup_data}
+        request = {"files": files}
         service.projects().updateContent(scriptId=script_id, body=request).execute()
 
         logger.info("Script restored from backup: %s <- %s", script_id, backup_path)

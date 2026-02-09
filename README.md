@@ -31,42 +31,42 @@ The codebase is split into modules to make it easier to read, extend, and publis
 This server requests access to your Google account through OAuth scopes. Think of scopes as permission levels:
 
 **Default configuration** (in `config.example.yaml`):
-- 📧 **Gmail**: Read, send, modify, and delete emails
-- 📁 **Drive**: Full access to files and folders
-- 📊 **Sheets/Docs**: Read and write spreadsheets and documents
-- 📅 **Calendar**: Manage events and meetings
-- ⚙️ **Apps Script**: Read and modify scripts
+- Google Sheets: Read/write spreadsheets
+- Google Drive: Full access to files and folders
+- Google Docs: Read/write documents
+- Gmail: Read, send, modify, and delete emails (`gmail.modify` includes read access)
+- Google Calendar: Manage events and meetings
+- Apps Script: Read and modify scripts and deployments
 
 ### Recommended Setup Approaches
 
-**🧪 For testing and experimentation:**
+**For testing and experimentation:**
 - Create a **separate Google account** for testing
 - Use the default scopes to explore all features
 - This way, your personal/work data stays separate
 
-**🔒 For production use:**
+**For production use:**
 - Review and **limit scopes** to only what you need
 - Example: If you only need to read sheets, use `auth/spreadsheets.readonly`
 - See `docs/SECURITY.md` for scope customization guide
 
-**🏢 For work accounts:**
+**For work accounts:**
 - Check with your organization's IT/security policies first
 - Consider using a service account with limited permissions
 - Keep audit logs of MCP server actions
 
 ### Built-in Safety Features
 The server includes safeguards to prevent accidents:
-- 🛡️ **Confirmation required** for destructive operations (delete, archive)
-- 🔍 **Dry-run mode** for bulk operations (see examples below)
-- 📝 **Draft mode** for emails (safe by default)
-- ⚠️ **Public sharing blocked** unless explicitly allowed
+- **Confirmation required** for destructive operations (delete, archive)
+- **Dry-run mode** for bulk operations (see examples below)
+- **Draft mode** for emails (safe by default)
+- **Public sharing blocked** unless explicitly allowed
 
-**Your AI agent will have access to the data you authorize.** The `MCP_AUTH_TOKEN` protects against unauthorized access from other processes, but the AI itself operates within the permissions you grant.
+**Your AI agent will have access to the data you authorize.** The `MCP_AUTH_TOKEN` is a server-side configuration check that ensures the operator has consciously enabled the server. It does not perform per-request client authentication. For STDIO-based MCP servers the transport is inherently local.
 
 ## Quick start
 1) Install dependencies:
    - `pip install -r requirements.txt`
-   - MCP runtime/SDK: install the one required by your IDE/runtime
 
 2) Configure OAuth:
    - Create an OAuth Client ID in Google Cloud Console.
@@ -74,8 +74,7 @@ The server includes safeguards to prevent accidents:
    - See: `docs/AUTH_SETUP.md`.
 
 3) Configure the server:
-   - Copy `.env.example` → `.env`.
-   - Copy `config.example.yaml` → `config.yaml`.
+   - Copy `config.example.yaml` to `config.yaml`.
    - Set paths and `MCP_AUTH_TOKEN`.
 
 4) Run the server:
@@ -91,7 +90,7 @@ If OAuth is configured, it should return the authenticated Gmail address.
 ```
 # Get your Gmail address (smoke test)
 Tool: get_gmail_profile
-Result: ✅ Authenticated Gmail address: user@example.com
+Result: Authenticated Gmail address: user@example.com
 
 # Search for files in Drive
 Tool: find_files
@@ -118,8 +117,8 @@ Arguments: {
   "body_text": "Here are the notes from our meeting...",
   "draft_mode": true
 }
-Result: 📝 EMAIL DRAFT CREATED (ID: r1234...)
-⚠️ Email saved as DRAFT, not sent yet.
+Result: EMAIL DRAFT CREATED (ID: r1234...)
+Email saved as DRAFT, not sent yet.
 To send: send_email(..., draft_mode=False)
 ```
 
@@ -128,20 +127,21 @@ To send: send_email(..., draft_mode=False)
 # Destructive operations require confirmation
 Tool: delete_email
 Arguments: {"message_id": "18abc...", "confirm": false}
-Result: ⚠️ CONFIRMATION REQUIRED
+Result: CONFIRMATION REQUIRED
 This will permanently delete email 18abc...
 To proceed, call this tool again with confirm=True
 
 # Large operations use dry-run mode
 Tool: clear_range
 Arguments: {"spreadsheet_id": "1a2b...", "range_name": "Sheet1!A1:Z1000"}
-Result: 🔍 DRY RUN: Large range detected (26,000 cells)
+Result: DRY RUN: Large range detected (26,000 cells)
 Would clear range: Sheet1!A1:Z1000
 To proceed: clear_range(..., confirm=True)
 ```
 
 ## STDIO logging note
-Do not write to stdout in STDIO servers. Use stderr or log to a file instead.
+The server logs to stderr (not stdout) so it never interferes with the
+STDIO MCP transport. If a `log_file` is configured, logs are also written to that file.
 
 ## Configuration
 You can use a combined approach:
@@ -152,7 +152,8 @@ You can use a combined approach:
 If `MCP_CONFIG_FILE` is set, its values are used as defaults and ENV overrides them.
 
 ## Environment variables
-Set environment variables in your shell or OS before starting the server.
+Set environment variables in your shell or OS before starting the server,
+or pass them in the `env` block of your IDE's MCP config (see `docs/IDE_SETUP.md`).
 
 Windows PowerShell:
 - `setx MCP_AUTH_TOKEN "your_token"`

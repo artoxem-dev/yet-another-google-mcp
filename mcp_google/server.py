@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 
 from mcp.server import Server
@@ -6,7 +7,7 @@ import mcp.types as types
 
 from .config import load_config
 from .logging import setup_logging
-from .security import require_auth
+from .security import require_token_configured
 from .handlers import (
     add_sheet_handler,
     append_row_handler,
@@ -550,6 +551,7 @@ async def handle_list_tools() -> List[types.Tool]:
                     "start_time": {"type": "string", "description": "ISO format start time"},
                     "end_time": {"type": "string", "description": "ISO format end time"},
                     "description": {"type": "string"},
+                    "calendar_id": {"type": "string", "default": "primary"},
                 },
                 "required": ["summary", "start_time", "end_time"],
             },
@@ -687,7 +689,7 @@ async def handle_call_tool(
         arguments = {}
 
     try:
-        require_auth(arguments, config.mcp_auth_token)
+        require_token_configured(config.mcp_auth_token)
 
         handlers = {
             "find_files": lambda a: find_files_handler(
@@ -853,6 +855,7 @@ async def handle_call_tool(
                 a.get("start_time"),
                 a.get("end_time"),
                 a.get("description", ""),
+                a.get("calendar_id", "primary"),
             ),
             "calendar_find_free_slots": lambda a: calendar_find_free_slots_handler(
                 config,
@@ -910,7 +913,7 @@ async def handle_call_tool(
         if name not in handlers:
             raise ValueError(f"Unknown tool: {name}")
 
-        result = handlers[name](arguments)
+        result = await asyncio.to_thread(handlers[name], arguments)
         return [types.TextContent(type="text", text=str(result))]
     except Exception as e:
         return [types.TextContent(type="text", text=f"Error: {str(e)}")]

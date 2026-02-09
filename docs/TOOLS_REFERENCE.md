@@ -1,7 +1,7 @@
 # MCP Tools Reference
 
 Below is a list of tools available in this MCP server.
-All calls require the server to run with `MCP_AUTH_TOKEN` set in the environment.
+All tool calls require `MCP_AUTH_TOKEN` to be configured on the server.
 
 ## Usage examples
 
@@ -9,7 +9,7 @@ All calls require the server to run with `MCP_AUTH_TOKEN` set in the environment
 ```
 # Get your Gmail address (smoke test)
 Tool: get_gmail_profile
-Result: ✅ Authenticated Gmail address: user@example.com
+Result: Authenticated Gmail address: user@example.com
 
 # Search for files in Drive
 Tool: find_files
@@ -36,8 +36,8 @@ Arguments: {
   "body_text": "Here are the notes from our meeting...",
   "draft_mode": true
 }
-Result: 📝 EMAIL DRAFT CREATED (ID: r1234...)
-⚠️ Email saved as DRAFT, not sent yet.
+Result: EMAIL DRAFT CREATED (ID: r1234...)
+Email saved as DRAFT, not sent yet.
 To send: send_email(..., draft_mode=False)
 ```
 
@@ -46,14 +46,14 @@ To send: send_email(..., draft_mode=False)
 # Destructive operations require confirmation
 Tool: delete_email
 Arguments: {"message_id": "18abc...", "confirm": false}
-Result: ⚠️ CONFIRMATION REQUIRED
+Result: CONFIRMATION REQUIRED
 This will permanently delete email 18abc...
 To proceed, call this tool again with confirm=True
 
 # Large operations use dry-run mode
 Tool: clear_range
 Arguments: {"spreadsheet_id": "1a2b...", "range_name": "Sheet1!A1:Z1000"}
-Result: 🔍 DRY RUN: Large range detected (26,000 cells)
+Result: DRY RUN: Large range detected (26,000 cells)
 Would clear range: Sheet1!A1:Z1000
 To proceed: clear_range(..., confirm=True)
 ```
@@ -138,9 +138,9 @@ To proceed: clear_range(..., confirm=True)
 
 ## Calendar
 - `list_events(calendar_id?, max_results?)`
-  - List upcoming events.
-- `create_event(summary, start_time, end_time, description?)`
-  - Create an event.
+  - List upcoming events (from now onwards).
+- `create_event(summary, start_time, end_time, description?, calendar_id?)`
+  - Create an event. `calendar_id` defaults to `"primary"`.
 - `calendar_find_free_slots(calendar_id?, start_time, end_time, duration_minutes?, max_results?)`
   - Find free slots.
 - `calendar_create_meeting(summary, start_time, end_time, attendees?, description?, location?, confirm?)`

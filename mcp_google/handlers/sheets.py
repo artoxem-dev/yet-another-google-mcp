@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import List, Optional
 
@@ -7,7 +8,7 @@ from ..auth import get_creds
 from ..config import Config
 
 
-def read_sheet_handler(config: Config, logger, spreadsheet_id: str, range_name: str) -> str:
+def read_sheet_handler(config: Config, logger: logging.Logger, spreadsheet_id: str, range_name: str) -> str:
     try:
         creds = get_creds(config)
         service = build("sheets", "v4", credentials=creds)
@@ -31,7 +32,7 @@ def read_sheet_handler(config: Config, logger, spreadsheet_id: str, range_name: 
 
 
 def append_row_handler(
-    config: Config, logger, spreadsheet_id: str, range_name: str, values: List[str]
+    config: Config, logger: logging.Logger, spreadsheet_id: str, range_name: str, values: List[str]
 ) -> str:
     try:
         creds = get_creds(config)
@@ -60,7 +61,7 @@ def append_row_handler(
 
 def update_sheet_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     spreadsheet_id: str,
     range_name: str,
     values: List[List[str]],
@@ -88,7 +89,7 @@ def update_sheet_handler(
         return f"Error updating sheet: {str(e)}"
 
 
-def create_spreadsheet_handler(config: Config, logger, title: str) -> str:
+def create_spreadsheet_handler(config: Config, logger: logging.Logger, title: str) -> str:
     try:
         creds = get_creds(config)
         service = build("sheets", "v4", credentials=creds)
@@ -105,7 +106,7 @@ def create_spreadsheet_handler(config: Config, logger, title: str) -> str:
 
 
 def add_sheet_handler(
-    config: Config, logger, spreadsheet_id: str, title: str
+    config: Config, logger: logging.Logger, spreadsheet_id: str, title: str
 ) -> str:
     try:
         creds = get_creds(config)
@@ -133,7 +134,7 @@ def add_sheet_handler(
 
 def clear_range_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     spreadsheet_id: str,
     range_name: str,
     confirm: bool = False,
@@ -197,7 +198,7 @@ def clear_range_handler(
 
 def sheet_create_filter_view_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     spreadsheet_id: str,
     sheet_id: int,
     title: str,
@@ -259,7 +260,7 @@ def sheet_create_filter_view_handler(
 
 
 def sheet_export_csv_handler(
-    config: Config, logger, spreadsheet_id: str, range_name: str, max_rows: int = 5000
+    config: Config, logger: logging.Logger, spreadsheet_id: str, range_name: str, max_rows: int = 5000
 ) -> str:
     """Export range to CSV (values only)."""
     try:
@@ -296,7 +297,7 @@ def sheet_export_csv_handler(
 
 def sheet_find_replace_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     spreadsheet_id: str,
     range_name: str,
     find_text: str,
@@ -377,7 +378,7 @@ def _replace_ci(text: str, find_text: str, replace_text: str) -> str:
 
 def sheet_create_named_range_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     spreadsheet_id: str,
     name: str,
     sheet_id: int,
@@ -420,7 +421,7 @@ def sheet_create_named_range_handler(
 
 
 def get_spreadsheet_meta_handler(
-    config: Config, logger, spreadsheet_id: str
+    config: Config, logger: logging.Logger, spreadsheet_id: str
 ) -> str:
     try:
         creds = get_creds(config)

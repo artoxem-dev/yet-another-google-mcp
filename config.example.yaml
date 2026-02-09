@@ -22,9 +22,8 @@ scopes:
   - "https://www.googleapis.com/auth/script.projects"         # Apps Script projects
   - "https://www.googleapis.com/auth/script.deployments"      # Apps Script deployments
   - "https://www.googleapis.com/auth/documents"               # Read/write Google Docs
-  - "https://www.googleapis.com/auth/gmail.modify"            # Read/send/delete emails
+  - "https://www.googleapis.com/auth/gmail.modify"            # Read/send/delete emails (includes read)
   - "https://www.googleapis.com/auth/calendar"                # Manage calendar events
-  - "https://www.googleapis.com/auth/gmail.readonly"          # Read-only Gmail access
 
 # Example: Read-only configuration (safer for exploration)
 # Uncomment and replace the scopes above with:

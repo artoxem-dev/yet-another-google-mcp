@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from googleapiclient.discovery import build
@@ -7,7 +8,7 @@ from ..config import Config
 from ..security import validate_email
 
 
-def find_files_handler(config: Config, logger, query: str) -> str:
+def find_files_handler(config: Config, logger: logging.Logger, query: str) -> str:
     try:
         creds = get_creds(config)
         service = build("drive", "v3", credentials=creds)
@@ -38,7 +39,7 @@ def find_files_handler(config: Config, logger, query: str) -> str:
 
 
 def create_folder_handler(
-    config: Config, logger, name: str, parent_id: Optional[str] = None
+    config: Config, logger: logging.Logger, name: str, parent_id: Optional[str] = None
 ) -> str:
     try:
         creds = get_creds(config)
@@ -57,7 +58,7 @@ def create_folder_handler(
         return f"Error creating folder: {str(e)}"
 
 
-def move_file_handler(config: Config, logger, file_id: str, folder_id: str) -> str:
+def move_file_handler(config: Config, logger: logging.Logger, file_id: str, folder_id: str) -> str:
     try:
         creds = get_creds(config)
         service = build("drive", "v3", credentials=creds)
@@ -80,7 +81,7 @@ def move_file_handler(config: Config, logger, file_id: str, folder_id: str) -> s
 
 def share_file_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     file_id: str,
     role: str,
     type: str = "user",
@@ -153,7 +154,7 @@ def share_file_handler(
 
 
 def drive_search_advanced_handler(
-    config: Config, logger, query: str, limit: int = 50
+    config: Config, logger: logging.Logger, query: str, limit: int = 50
 ) -> str:
     """Advanced Drive search with query and limit."""
     try:
@@ -190,7 +191,7 @@ def drive_search_advanced_handler(
         return f"Error searching files: {str(e)}"
 
 
-def drive_list_permissions_handler(config: Config, logger, file_id: str) -> str:
+def drive_list_permissions_handler(config: Config, logger: logging.Logger, file_id: str) -> str:
     """List permissions for a Drive file."""
     try:
         creds = get_creds(config)
@@ -221,7 +222,7 @@ def drive_list_permissions_handler(config: Config, logger, file_id: str) -> str:
 
 
 def drive_revoke_public_handler(
-    config: Config, logger, file_id: str, confirm: bool = False
+    config: Config, logger: logging.Logger, file_id: str, confirm: bool = False
 ) -> str:
     """Revoke public access (type=anyone) for a Drive file."""
     try:
@@ -260,7 +261,7 @@ def drive_revoke_public_handler(
 
 def drive_copy_file_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     file_id: str,
     name: Optional[str] = None,
     parent_id: Optional[str] = None,

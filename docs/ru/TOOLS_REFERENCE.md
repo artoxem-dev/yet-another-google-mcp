@@ -1,7 +1,7 @@
 # Справочник MCP Tools
 
 Ниже перечислены инструменты (tools), доступные в MCP сервере.
-Все вызовы требуют, чтобы сервер был запущен с `MCP_AUTH_TOKEN` в окружении.
+Все вызовы требуют, чтобы `MCP_AUTH_TOKEN` был сконфигурирован на сервере.
 
 ## Примеры использования
 
@@ -9,7 +9,7 @@
 ```
 # Получить адрес Gmail (smoke test)
 Tool: get_gmail_profile
-Результат: ✅ Authenticated Gmail address: user@example.com
+Результат: Authenticated Gmail address: user@example.com
 
 # Поиск файлов в Drive
 Tool: find_files
@@ -36,8 +36,8 @@ Tool: send_email
   "body_text": "Вот заметки с нашей встречи...",
   "draft_mode": true
 }
-Результат: 📝 EMAIL DRAFT CREATED (ID: r1234...)
-⚠️ Email saved as DRAFT, not sent yet.
+Результат: EMAIL DRAFT CREATED (ID: r1234...)
+Email saved as DRAFT, not sent yet.
 Для отправки: send_email(..., draft_mode=False)
 ```
 
@@ -46,14 +46,14 @@ Tool: send_email
 # Деструктивные операции требуют подтверждения
 Tool: delete_email
 Аргументы: {"message_id": "18abc...", "confirm": false}
-Результат: ⚠️ CONFIRMATION REQUIRED
+Результат: CONFIRMATION REQUIRED
 This will permanently delete email 18abc...
 To proceed, call this tool again with confirm=True
 
 # Массовые операции используют dry-run режим
 Tool: clear_range
 Аргументы: {"spreadsheet_id": "1a2b...", "range_name": "Лист1!A1:Z1000"}
-Результат: 🔍 DRY RUN: Large range detected (26,000 cells)
+Результат: DRY RUN: Large range detected (26,000 cells)
 Would clear range: Лист1!A1:Z1000
 To proceed: clear_range(..., confirm=True)
 ```
@@ -114,7 +114,7 @@ To proceed: clear_range(..., confirm=True)
 
 ## Gmail
 - `send_email(to, subject, body_text, draft_mode?)`
-  - По умолчанию создает черновик.
+  - По умолчанию создаёт черновик.
 - `send_draft(draft_id)`
   - Отправить черновик.
 - `get_gmail_profile()`
@@ -138,9 +138,9 @@ To proceed: clear_range(..., confirm=True)
 
 ## Calendar
 - `list_events(calendar_id?, max_results?)`
-  - Список ближайших событий.
-- `create_event(summary, start_time, end_time, description?)`
-  - Создать событие.
+  - Список ближайших событий (от текущего момента).
+- `create_event(summary, start_time, end_time, description?, calendar_id?)`
+  - Создать событие. `calendar_id` по умолчанию `"primary"`.
 - `calendar_find_free_slots(calendar_id?, start_time, end_time, duration_minutes?, max_results?)`
   - Найти свободные слоты.
 - `calendar_create_meeting(summary, start_time, end_time, attendees?, description?, location?, confirm?)`

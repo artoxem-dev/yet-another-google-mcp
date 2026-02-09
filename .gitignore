@@ -1,6 +1,4 @@
 ## Secrets and local config
-.env
-.env.*
 config.yaml
 config.yml
 config.json

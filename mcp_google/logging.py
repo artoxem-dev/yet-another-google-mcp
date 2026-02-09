@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from typing import Optional
 
 
@@ -8,7 +9,7 @@ def setup_logging(
     level: int = logging.INFO,
     logger_name: str = "GoogleToolsMCP",
 ) -> logging.Logger:
-    handlers = [logging.StreamHandler()]
+    handlers = [logging.StreamHandler(sys.stderr)]
 
     if log_file:
         log_dir = os.path.dirname(log_file)

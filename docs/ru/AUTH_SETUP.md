@@ -12,7 +12,7 @@
 4) Создайте OAuth Client ID (Desktop app).
 5) Скачайте JSON и сохраните в путь, указанный в конфиге:
    - `client_secrets_file` в `config.yaml`
-   - или `GOOGLE_CLIENT_SECRETS_FILE` в `.env`
+   - или переменная окружения `GOOGLE_CLIENT_SECRETS_FILE`
 6) При первом запуске откроется окно авторизации.
    Полученный токен будет сохранен в `token_file`.
 

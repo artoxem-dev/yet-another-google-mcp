@@ -1,4 +1,5 @@
 import base64
+import logging
 from typing import Dict
 
 from googleapiclient.discovery import build
@@ -7,7 +8,7 @@ from ..auth import get_creds
 from ..config import Config
 
 
-def read_doc_handler(config: Config, logger, document_id: str) -> str:
+def read_doc_handler(config: Config, logger: logging.Logger, document_id: str) -> str:
     try:
         creds = get_creds(config)
         service = build("docs", "v1", credentials=creds)
@@ -27,7 +28,7 @@ def read_doc_handler(config: Config, logger, document_id: str) -> str:
         return f"Error reading document: {str(e)}"
 
 
-def create_doc_handler(config: Config, logger, title: str) -> str:
+def create_doc_handler(config: Config, logger: logging.Logger, title: str) -> str:
     try:
         creds = get_creds(config)
         service = build("docs", "v1", credentials=creds)
@@ -40,7 +41,7 @@ def create_doc_handler(config: Config, logger, title: str) -> str:
         return f"Error creating document: {str(e)}"
 
 
-def append_to_doc_handler(config: Config, logger, document_id: str, text: str) -> str:
+def append_to_doc_handler(config: Config, logger: logging.Logger, document_id: str, text: str) -> str:
     try:
         creds = get_creds(config)
         service = build("docs", "v1", credentials=creds)
@@ -65,7 +66,7 @@ def append_to_doc_handler(config: Config, logger, document_id: str, text: str) -
 
 def doc_fill_template_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     document_id: str,
     replacements: Dict[str, str],
     confirm: bool = False,
@@ -110,7 +111,7 @@ def doc_fill_template_handler(
         return f"❌ Error filling template: {str(e)}"
 
 
-def doc_export_pdf_handler(config: Config, logger, document_id: str) -> str:
+def doc_export_pdf_handler(config: Config, logger: logging.Logger, document_id: str) -> str:
     """Export a Google Doc to PDF (base64)."""
     try:
         creds = get_creds(config)

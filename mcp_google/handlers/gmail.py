@@ -1,4 +1,5 @@
 import base64
+import logging
 from email.mime.text import MIMEText
 from typing import List, Optional
 
@@ -20,7 +21,7 @@ def _create_message(to: str, subject: str, message_text: str) -> dict:
 
 def send_email_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     to: str,
     subject: str,
     body_text: str,
@@ -65,7 +66,7 @@ def send_email_handler(
         return f"❌ Error sending email: {str(e)}"
 
 
-def send_draft_handler(config: Config, logger, draft_id: str) -> str:
+def send_draft_handler(config: Config, logger: logging.Logger, draft_id: str) -> str:
     """Send an existing draft."""
     try:
         creds = get_creds(config)
@@ -86,7 +87,7 @@ def send_draft_handler(config: Config, logger, draft_id: str) -> str:
         return f"❌ Error sending draft: {str(e)}"
 
 
-def get_gmail_profile_handler(config: Config, logger) -> str:
+def get_gmail_profile_handler(config: Config, logger: logging.Logger) -> str:
     """Get the authenticated Gmail address (profile)."""
     try:
         creds = get_creds(config)
@@ -101,7 +102,7 @@ def get_gmail_profile_handler(config: Config, logger) -> str:
 
 
 def create_draft_handler(
-    config: Config, logger, to: str, subject: str, body_text: str
+    config: Config, logger: logging.Logger, to: str, subject: str, body_text: str
 ) -> str:
     try:
         creds = get_creds(config)
@@ -119,7 +120,7 @@ def create_draft_handler(
 
 
 def list_emails_handler(
-    config: Config, logger, max_results: int = 10, query: Optional[str] = None
+    config: Config, logger: logging.Logger, max_results: int = 10, query: Optional[str] = None
 ) -> str:
     try:
         creds = get_creds(config)
@@ -153,7 +154,7 @@ def list_emails_handler(
         return f"Error listing emails: {str(e)}"
 
 
-def read_email_handler(config: Config, logger, message_id: str) -> str:
+def read_email_handler(config: Config, logger: logging.Logger, message_id: str) -> str:
     try:
         creds = get_creds(config)
         service = build("gmail", "v1", credentials=creds)
@@ -181,7 +182,7 @@ def read_email_handler(config: Config, logger, message_id: str) -> str:
 
 
 def delete_email_handler(
-    config: Config, logger, message_id: str, confirm: bool = False
+    config: Config, logger: logging.Logger, message_id: str, confirm: bool = False
 ) -> str:
     """Delete email with confirmation requirement."""
     try:
@@ -219,7 +220,7 @@ def delete_email_handler(
 
 
 def batch_delete_emails_handler(
-    config: Config, logger, message_ids: List[str], dry_run: bool = True
+    config: Config, logger: logging.Logger, message_ids: List[str], dry_run: bool = True
 ) -> str:
     """Batch delete emails with dry-run mode."""
     try:
@@ -262,7 +263,7 @@ def batch_delete_emails_handler(
 
 
 def gmail_search_and_summarize_handler(
-    config: Config, logger, query: str, max_results: int = 50
+    config: Config, logger: logging.Logger, query: str, max_results: int = 50
 ) -> str:
     """Search Gmail and return a brief summary."""
     try:
@@ -315,7 +316,7 @@ def gmail_search_and_summarize_handler(
 
 
 def gmail_archive_handler(
-    config: Config, logger, message_id: str, confirm: bool = False
+    config: Config, logger: logging.Logger, message_id: str, confirm: bool = False
 ) -> str:
     """Archive a Gmail message (remove INBOX label)."""
     try:
@@ -365,7 +366,7 @@ def _get_or_create_label_id(service, label_name: str, create_if_missing: bool = 
 
 def gmail_label_apply_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     message_ids: List[str],
     label_name: str,
     dry_run: bool = True,

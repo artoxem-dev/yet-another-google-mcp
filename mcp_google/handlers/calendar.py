@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from googleapiclient.discovery import build
@@ -9,7 +10,7 @@ from ..security import validate_email
 
 
 def list_events_handler(
-    config: Config, logger, calendar_id: str = "primary", max_results: int = 10
+    config: Config, logger: logging.Logger, calendar_id: str = "primary", max_results: int = 10
 ) -> str:
     try:
         creds = get_creds(config)
@@ -19,6 +20,7 @@ def list_events_handler(
             service.events()
             .list(
                 calendarId=calendar_id,
+                timeMin=datetime.now(timezone.utc).isoformat(),
                 maxResults=max_results,
                 singleEvents=True,
                 orderBy="startTime",
@@ -46,11 +48,12 @@ def list_events_handler(
 
 def create_event_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     summary: str,
     start_time: str,
     end_time: str,
     description: str = "",
+    calendar_id: str = "primary",
 ) -> str:
     try:
         creds = get_creds(config)
@@ -63,7 +66,7 @@ def create_event_handler(
             "end": {"dateTime": end_time, "timeZone": "UTC"},
         }
 
-        event = service.events().insert(calendarId="primary", body=event).execute()
+        event = service.events().insert(calendarId=calendar_id, body=event).execute()
         return f"Event created: {event.get('htmlLink')}"
     except Exception as e:
         return f"Error creating event: {str(e)}"
@@ -71,7 +74,7 @@ def create_event_handler(
 
 def calendar_find_free_slots_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     calendar_id: str,
     start_time: str,
     end_time: str,
@@ -155,7 +158,7 @@ def calendar_find_free_slots_handler(
 
 def calendar_create_meeting_handler(
     config: Config,
-    logger,
+    logger: logging.Logger,
     summary: str,
     start_time: str,
     end_time: str,
