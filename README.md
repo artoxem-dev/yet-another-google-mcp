@@ -65,8 +65,11 @@ The server includes safeguards to prevent accidents:
 **Your AI agent will have access to the data you authorize.** The `MCP_AUTH_TOKEN` is a server-side configuration check that ensures the operator has consciously enabled the server. It does not perform per-request client authentication. For STDIO-based MCP servers the transport is inherently local.
 
 ## Quick start
+
 1) Install dependencies:
-   - `pip install -r requirements.txt`
+   ```
+   pip install -r requirements.txt
+   ```
 
 2) Configure OAuth:
    - Create an OAuth Client ID in Google Cloud Console.
@@ -74,47 +77,37 @@ The server includes safeguards to prevent accidents:
    - See: `docs/AUTH_SETUP.md`.
 
 3) Configure the server:
-   - Copy `config.example.yaml` to `config.yaml`.
-   - Set paths and `MCP_AUTH_TOKEN`.
+   - Copy or rename `config.example.yaml` to `config.yaml`.
+   - Set paths to OAuth files and choose `MCP_AUTH_TOKEN`.
+
+<details>
+<summary>How to create <code>MCP_AUTH_TOKEN</code></summary>
+
+`MCP_AUTH_TOKEN` is a secret string you choose yourself. The server checks that it is set before running tools — this prevents accidental starts without explicit setup.
+
+**Create a token:**
+- Invent a random string, e.g. `MySecretToken_2026!` or use a password generator.
+- There is no official format; use letters, numbers, symbols. Recommended length: 16+ characters.
+- Avoid reusing passwords from other services.
+
+**Where to set it:**
+1. In `config.yaml` → `mcp_auth_token: "your_token"`
+2. Or as env var → `MCP_AUTH_TOKEN=your_token` (in the `env` block of your IDE MCP config or in the OS).
+
+The same token value must be used wherever the server is configured (IDE, env, config file). It is not sent anywhere; it is only checked locally on the server side.
+
+</details>
 
 4) Run the server:
-   - `python server.py`
+   ```
+   python server.py
+   ```
 
-**IDE setup:** Use one of two ways to run the server. Replace `<PROJECT_PATH>` and `your_token_here` in the blocks below.
-
-| Option | Command | Notes |
-|--------|---------|-------|
-| **A (recommended)** | `uv run` | No pre-installed deps. Install [uv](https://docs.astral.sh/uv/): `pip install uv` or `winget install astral-sh.uv` |
-| **B** | `python` | Requires `pip install -r requirements.txt`. IDE must use the same Python (e.g. project venv). If you get `ModuleNotFoundError: No module named 'yaml'`, use Option A |
+**IDE setup:** Add the MCP config for your IDE below. Replace `<PROJECT_PATH>` with the absolute path to your project and `your_token_here` with your token. Ensure the IDE uses the same Python where you ran `pip install -r requirements.txt`.
 
 <details>
 <summary><strong>Cursor</strong> — <code>.cursor/mcp.json</code> or <code>~/.cursor/mcp.json</code></summary>
 
-**Option A — uv run:**
-```json
-{
-  "mcpServers": {
-    "google-tools": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with", "google-api-python-client",
-        "--with", "PyYAML",
-        "--with", "google-auth",
-        "--with", "google-auth-oauthlib",
-        "--with", "mcp",
-        "<PROJECT_PATH>\\\\server.py"
-      ],
-      "env": {
-        "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
-      }
-    }
-  }
-}
-```
-
-**Option B — python:**
 ```json
 {
   "mcpServers": {
@@ -135,31 +128,6 @@ The server includes safeguards to prevent accidents:
 <details>
 <summary><strong>Windsurf</strong> — <code>%APPDATA%\Codeium\Windsurf\mcp_config.json</code> (Windows)</summary>
 
-**Option A — uv run:**
-```json
-{
-  "mcpServers": {
-    "google-tools": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with", "google-api-python-client",
-        "--with", "PyYAML",
-        "--with", "google-auth",
-        "--with", "google-auth-oauthlib",
-        "--with", "mcp",
-        "<PROJECT_PATH>\\\\server.py"
-      ],
-      "env": {
-        "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
-      }
-    }
-  }
-}
-```
-
-**Option B — python:**
 ```json
 {
   "mcpServers": {
@@ -182,32 +150,6 @@ The server includes safeguards to prevent accidents:
 
 > Uses `servers`, not `mcpServers`. Requires VS Code 1.102+ and Copilot enabled.
 
-**Option A — uv run:**
-```json
-{
-  "servers": {
-    "google-tools": {
-      "type": "stdio",
-      "command": "uv",
-      "args": [
-        "run",
-        "--with", "google-api-python-client",
-        "--with", "PyYAML",
-        "--with", "google-auth",
-        "--with", "google-auth-oauthlib",
-        "--with", "mcp",
-        "<PROJECT_PATH>\\\\server.py"
-      ],
-      "env": {
-        "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
-      }
-    }
-  }
-}
-```
-
-**Option B — python:**
 ```json
 {
   "servers": {
@@ -229,33 +171,8 @@ The server includes safeguards to prevent accidents:
 <details>
 <summary><strong>Other IDEs</strong> — generic MCP config</summary>
 
-Use the same `command` / `args` / `env`. Root key may be `mcpServers` or `servers`.
+Use the same `command` / `args` / `env`. The root key may be `mcpServers` or `servers`.
 
-**Option A — uv run:**
-```json
-{
-  "mcpServers": {
-    "google-tools": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with", "google-api-python-client",
-        "--with", "PyYAML",
-        "--with", "google-auth",
-        "--with", "google-auth-oauthlib",
-        "--with", "mcp",
-        "<PROJECT_PATH>\\\\server.py"
-      ],
-      "env": {
-        "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
-      }
-    }
-  }
-}
-```
-
-**Option B — python:**
 ```json
 {
   "mcpServers": {
