@@ -8,6 +8,30 @@ Before you start:
 - Configure `config.yaml` as described in `README.md`.
 - For STDIO servers, do not write to stdout (the server already logs to stderr).
 
+## Choosing how to run the server
+
+The IDE launches the server as a subprocess. Use one of two approaches:
+
+**Option A — `uv run` (recommended):** No need to pre-install dependencies. [uv](https://docs.astral.sh/uv/) installs them on the fly. Install uv: `pip install uv` or `winget install astral-sh.uv`.
+
+```json
+{
+  "command": "uv",
+  "args": [
+    "run",
+    "--with", "google-api-python-client",
+    "--with", "PyYAML",
+    "--with", "google-auth",
+    "--with", "google-auth-oauthlib",
+    "--with", "mcp",
+    "<PROJECT_PATH>\\\\server.py"
+  ],
+  "env": { "MCP_AUTH_TOKEN": "your_token_here", "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml" }
+}
+```
+
+**Option B — `python`:** Requires dependencies installed (`pip install -r requirements.txt`). The IDE must use the same Python interpreter (e.g. project venv). If you get `ModuleNotFoundError: No module named 'yaml'`, the IDE is using a different Python — switch to Option A or point the config to your venv’s `python.exe`.
+
 Use this common configuration template (replace placeholders with your values):
  - Replace `<PROJECT_PATH>` with the absolute path to your local clone.
  - Set `MCP_AUTH_TOKEN` to your own token value.
