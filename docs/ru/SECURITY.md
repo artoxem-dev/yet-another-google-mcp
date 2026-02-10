@@ -41,9 +41,6 @@ scopes:
   - "https://www.googleapis.com/auth/script.deployments"      # Деплои Apps Script
 ```
 
-> Примечание: `gmail.modify` уже включает доступ на чтение, поэтому отдельный
-> scope `gmail.readonly` не нужен.
-
 ### Конфигурация только для чтения (безопаснее для тестирования)
 ```yaml
 scopes:
