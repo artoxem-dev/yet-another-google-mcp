@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yet-another-google-mcp"
+version = "1.0.0"
+description = "MCP server for Google Drive, Sheets, Docs, Gmail, Calendar, and Apps Script — Tools, Resources, and Prompts"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [
+    { name = "Artoxem" }
+]
+keywords = ["mcp", "model-context-protocol", "google", "gmail", "drive", "sheets", "docs", "calendar", "apps-script"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "google-api-python-client>=2.100.0,<3",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.0",
+    "mcp>=1.0.0,<2",
+    "PyYAML>=6.0",
+]
+
+[project.urls]
+Repository = "https://github.com/artoxem-dev/yet-another-google-mcp"
+Documentation = "https://github.com/artoxem-dev/yet-another-google-mcp#readme"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mcp_google*"]
