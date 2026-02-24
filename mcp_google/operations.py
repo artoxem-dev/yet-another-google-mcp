@@ -1,10 +1,21 @@
 import json
 import os
 import uuid
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
 PendingOperations = Dict[str, Dict[str, Any]]
+
+
+@dataclass
+class BinaryResult:
+    """Wraps binary data for tool results that produce non-text content (e.g. PDF exports)."""
+
+    uri: str
+    mime_type: str
+    data: bytes
+    description: str = field(default="")
 
 pending_operations: PendingOperations = {}
 

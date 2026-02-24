@@ -1,7 +1,29 @@
 # MCP Tools Reference
 
-Below is a list of tools available in this MCP server.
+Below is a list of tools, resources, and prompts available in this MCP server.
 All tool calls require `MCP_AUTH_TOKEN` to be configured on the server.
+
+## MCP Primitives
+
+This server exposes three types of MCP primitives:
+
+| Primitive | Description |
+|-----------|-------------|
+| **Tools** | Executable actions (read, write, delete). Triggered by the AI on demand. |
+| **Resources** | Passive data sources that can be attached to context. Read-only snapshots of Google data. |
+| **Prompts** | Reusable prompt templates that fetch live data and prepare it for AI analysis. |
+
+## Tool Annotations
+
+Every tool is annotated with safety hints:
+
+| Annotation | Meaning |
+|------------|---------|
+| `readOnlyHint: true` | The tool only reads data and makes no changes. |
+| `destructiveHint: true` | The tool can permanently delete or overwrite data. |
+| `destructiveHint: false` | The tool writes or modifies data, but the action is reversible or low-risk. |
+
+Compatible MCP clients (e.g. Cursor) use these hints to warn users before destructive actions.
 
 ## Usage examples
 
@@ -110,7 +132,7 @@ To proceed: clear_range(..., confirm=True)
 - `doc_fill_template(document_id, replacements, confirm?)`
   - Fill a template, requires `confirm=true`.
 - `doc_export_pdf(document_id)`
-  - Export PDF (base64).
+  - Export document as a binary PDF. Returns an `EmbeddedResource` with MIME type `application/pdf`.
 
 ## Gmail
 - `send_email(to, subject, body_text, draft_mode?)`
@@ -159,3 +181,74 @@ To proceed: clear_range(..., confirm=True)
   - Cancel prepared operation.
 - `restore_script_backup(backup_path)`
   - Restore from backup.
+
+---
+
+## Resources
+
+Resources are read-only data snapshots that MCP clients can attach directly to the AI context window. No arguments are needed for static resources; parameterised templates require embedding the IDs in the URI.
+
+### Static resources
+
+| URI | Description |
+|-----|-------------|
+| `gdrive://recent` | 20 most recently modified files in Google Drive |
+| `gmail://inbox` | Up to 20 unread messages in the Gmail inbox |
+| `gcalendar://upcoming` | Upcoming events in the primary calendar (next 7 days) |
+
+### Resource templates
+
+| URI template | Description |
+|--------------|-------------|
+| `gdrive://file/{file_id}` | Metadata for a specific Google Drive file |
+| `gsheets://{spreadsheet_id}/{range}` | Data from a specific spreadsheet range, e.g. `gsheets://SPREADSHEET_ID/Sheet1!A1:Z100` |
+| `gdocs://{document_id}` | Full text content of a specific Google Doc |
+
+### Examples
+```
+# Attach recent Drive files to context
+Resource URI: gdrive://recent
+
+# Read a specific spreadsheet range
+Resource URI: gsheets://1a2b3c4d5e.../Sheet1!A1:D20
+
+# Read a specific document
+Resource URI: gdocs://1a2b3c4d5e...
+```
+
+---
+
+## Prompts
+
+Prompts are reusable templates that fetch live Google data and embed it into a structured message ready for AI analysis. They appear in the MCP client's prompt picker.
+
+### `summarize_inbox`
+Fetch recent Gmail messages and prepare them for AI summarization.
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `query` | No | `is:unread in:inbox` | Gmail search query |
+| `max_results` | No | `20` | Maximum number of emails to include |
+
+### `analyze_spreadsheet`
+Read a Google Sheet range and prepare the data for AI analysis or visualization.
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `spreadsheet_id` | Yes | — | The Google Spreadsheet ID |
+| `range` | No | `Sheet1` | Sheet range to read |
+
+### `plan_week`
+Fetch upcoming calendar events and prepare a weekly planning summary for AI-assisted scheduling.
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `days_ahead` | No | `7` | Number of days to look ahead |
+
+### `search_drive`
+Search Google Drive for files and prepare a structured list for AI review or organisation suggestions.
+
+| Argument | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `query` | Yes | — | Drive search query, e.g. `name contains "budget"` |
+| `limit` | No | `20` | Maximum number of results |

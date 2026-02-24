@@ -1,11 +1,11 @@
-import base64
 import logging
-from typing import Dict
+from typing import Dict, Union
 
 from googleapiclient.discovery import build
 
 from ..auth import get_creds
 from ..config import Config
+from ..operations import BinaryResult
 
 
 def read_doc_handler(config: Config, logger: logging.Logger, document_id: str) -> str:
@@ -111,19 +111,25 @@ def doc_fill_template_handler(
         return f"❌ Error filling template: {str(e)}"
 
 
-def doc_export_pdf_handler(config: Config, logger: logging.Logger, document_id: str) -> str:
-    """Export a Google Doc to PDF (base64)."""
+def doc_export_pdf_handler(
+    config: Config, logger: logging.Logger, document_id: str
+) -> Union[BinaryResult, str]:
+    """Export a Google Doc to PDF and return it as binary content."""
     try:
         creds = get_creds(config)
         drive = build("drive", "v3", credentials=creds)
 
-        data = drive.files().export(
+        data: bytes = drive.files().export(
             fileId=document_id, mimeType="application/pdf"
         ).execute()
 
-        pdf_b64 = base64.b64encode(data).decode("utf-8")
         logger.info("Doc exported to PDF: %s bytes=%s", document_id, len(data))
-        return f"✅ PDF (base64): {pdf_b64}"
+        return BinaryResult(
+            uri=f"gdocs://{document_id}/export.pdf",
+            mime_type="application/pdf",
+            data=data,
+            description=f"PDF export of document {document_id} ({len(data):,} bytes)",
+        )
     except Exception as e:
         logger.error("Error exporting PDF %s: %s", document_id, str(e))
         return f"❌ Error exporting PDF: {str(e)}"

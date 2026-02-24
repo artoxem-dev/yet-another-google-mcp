@@ -1,109 +1,111 @@
-# MCP Google Tools Server
+<div align="center">
 
-MCP server for Google Drive, Sheets, Docs, Gmail, Calendar, and Apps Script.
-The codebase is split into modules to make it easier to read, extend, and publish.
+# 🔧 MCP Google Tools Server
 
-## Features
-- Drive: search, move, copy, permissions.
-- Sheets: read/write, clear ranges, find/replace, CSV export.
-- Docs: read, create, template fill, PDF export.
-- Gmail: drafts, send, search, delete with confirmation.
-- Calendar: events, free slots, meetings with confirmation.
-- Apps Script: read, staged updates with backup and rollback.
+**A full-featured [Model Context Protocol](https://modelcontextprotocol.io) server for Google Workspace.**  
+Give your AI assistant real-time access to Drive, Gmail, Calendar, Sheets, Docs, and Apps Script.
 
-## Capabilities (full tool list)
-- Drive: `find_files`, `create_folder`, `move_file`, `share_file`, `drive_search_advanced`,
-  `drive_list_permissions`, `drive_revoke_public`, `drive_copy_file`.
-- Sheets: `read_sheet`, `append_row`, `update_sheet`, `create_spreadsheet`, `add_sheet`,
-  `clear_range`, `sheet_create_filter_view`, `sheet_export_csv`, `sheet_find_replace`,
-  `sheet_create_named_range`, `get_spreadsheet_meta`.
-- Docs: `read_doc`, `create_doc`, `append_to_doc`, `doc_fill_template`, `doc_export_pdf`.
-- Gmail: `send_email`, `send_draft`, `get_gmail_profile`, `create_draft`, `list_emails`,
-  `read_email`, `delete_email`, `batch_delete_emails`, `gmail_search_and_summarize`,
-  `gmail_archive`, `gmail_label_apply`.
-- Calendar: `list_events`, `create_event`, `calendar_find_free_slots`, `calendar_create_meeting`.
-- Apps Script: `create_script_project`, `get_script_content`, `prepare_script_update`,
-  `execute_operation`, `cancel_operation`, `restore_script_backup`.
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![MCP](https://img.shields.io/badge/MCP-1.x-blueviolet?logo=anthropic&logoColor=white)](https://modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Google APIs](https://img.shields.io/badge/Google%20APIs-Drive%20%7C%20Gmail%20%7C%20Calendar%20%7C%20Sheets%20%7C%20Docs-red?logo=google)](https://developers.google.com)
 
-## Security & Access Control
+[**English docs**](#documentation) · [**Документация на русском**](#документация)
 
-### Understanding OAuth Scopes
-This server requests access to your Google account through OAuth scopes. Think of scopes as permission levels:
+</div>
 
-**Default configuration** (in `config.example.yaml`):
-- Google Sheets: Read/write spreadsheets
-- Google Drive: Full access to files and folders
-- Google Docs: Read/write documents
-- Gmail: Read, send, modify, and delete emails (`gmail.modify` includes read access)
-- Google Calendar: Manage events and meetings
-- Apps Script: Read and modify scripts and deployments
+---
 
-### Recommended Setup Approaches
+## ✨ What it can do
 
-**For testing and experimentation:**
-- Create a **separate Google account** for testing
-- Use the default scopes to explore all features
-- This way, your personal/work data stays separate
+| Service | Capabilities |
+|---------|-------------|
+| 📁 **Google Drive** | Search, copy, move, share, manage permissions |
+| 📊 **Google Sheets** | Read/write ranges, named ranges, filter views, find & replace, CSV export |
+| 📄 **Google Docs** | Read, create, append text, fill templates, export to PDF |
+| 📧 **Gmail** | Draft, send, search, archive, label, delete with confirmation |
+| 📅 **Google Calendar** | List events, find free slots, create meetings with attendees |
+| ⚙️ **Apps Script** | Read, staged updates, auto-backup, rollback |
+| 🔗 **Resources** | Attach live Drive / Gmail / Calendar / Sheets / Docs snapshots to AI context |
+| 💬 **Prompts** | Ready-made AI templates: summarize inbox, analyze spreadsheet, plan week, search files |
 
-**For production use:**
-- Review and **limit scopes** to only what you need
-- Example: If you only need to read sheets, use `auth/spreadsheets.readonly`
-- See `docs/SECURITY.md` for scope customization guide
+---
 
-**For work accounts:**
-- Check with your organization's IT/security policies first
-- Consider using a service account with limited permissions
-- Keep audit logs of MCP server actions
+## 🧩 MCP Primitives
 
-### Built-in Safety Features
-The server includes safeguards to prevent accidents:
-- **Confirmation required** for destructive operations (delete, archive)
-- **Dry-run mode** for bulk operations (see examples below)
-- **Draft mode** for emails (safe by default)
-- **Public sharing blocked** unless explicitly allowed
+This server exposes all three MCP primitive types:
 
-**Your AI agent will have access to the data you authorize.** The `MCP_AUTH_TOKEN` is a server-side configuration check that ensures the operator has consciously enabled the server. It does not perform per-request client authentication. For STDIO-based MCP servers the transport is inherently local.
+<table>
+<tr>
+<td align="center" width="33%">
 
-## Quick start
+### 🛠 Tools
+**50+ executable actions**<br/>
+Called by the AI on demand.<br/>
+Every tool is annotated with<br/>
+`readOnlyHint` / `destructiveHint`<br/>
+so clients can warn before risky actions.
 
-1) Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+</td>
+<td align="center" width="33%">
 
-2) Configure OAuth:
-   - Create an OAuth Client ID in Google Cloud Console.
-   - Download `oauth.keys.json` and place it in a convenient path.
-   - **→ Full instructions:** [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md)
+### 📦 Resources
+**Read-only data snapshots**<br/>
+Attach live Google data directly<br/>
+to the AI context window<br/>
+without calling a tool.<br/>
+Supports static URIs and templates.
 
-3) Configure the server:
-   - Copy or rename `config.example.yaml` to `config.yaml`.
-   - Set paths to OAuth files and choose `MCP_AUTH_TOKEN`.
+</td>
+<td align="center" width="33%">
+
+### 💬 Prompts
+**Reusable AI templates**<br/>
+Select a prompt in your MCP client<br/>
+to fetch live data and start<br/>
+a structured conversation<br/>
+in one click.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🚀 Quick Start
+
+### 1 — Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2 — Set up Google OAuth
+Create an OAuth 2.0 Client ID in [Google Cloud Console](https://console.cloud.google.com/), download the JSON, and note its path.
+
+> **Full step-by-step guide:** [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md) · [docs/ru/AUTH_SETUP.md](docs/ru/AUTH_SETUP.md)
+
+### 3 — Configure the server
+```bash
+cp config.example.yaml config.yaml
+# then edit config.yaml — set paths and choose MCP_AUTH_TOKEN
+```
 
 <details>
-<summary>How to create <code>MCP_AUTH_TOKEN</code></summary>
+<summary>💡 How to create <code>MCP_AUTH_TOKEN</code></summary>
 
-`MCP_AUTH_TOKEN` is a secret string you choose yourself. The server checks that it is set before running tools — this prevents accidental starts without explicit setup.
+`MCP_AUTH_TOKEN` is a secret string you choose. The server checks it is set before running — this prevents accidental starts without explicit setup.
 
-**Create a token:**
-- Invent a random string, e.g. `MySecretToken_2026!` or use a password generator.
-- There is no official format; use letters, numbers, symbols. Recommended length: 16+ characters.
-- Avoid reusing passwords from other services.
+- Invent any random string, e.g. `MySecretToken_2026!` or use a password generator.
+- Recommended length: 16+ characters. Avoid reusing passwords.
+- Set it in `config.yaml` → `mcp_auth_token: "your_token"` **or** as the env var `MCP_AUTH_TOKEN`.
 
-**Where to set it:**
-1. In `config.yaml` → `mcp_auth_token: "your_token"`
-2. Or as env var → `MCP_AUTH_TOKEN=your_token` (in the `env` block of your IDE MCP config or in the OS).
-
-The same token value must be used wherever the server is configured (IDE, env, config file). It is not sent anywhere; it is only checked locally on the server side.
+The token is never sent anywhere — it is only checked locally.
 
 </details>
 
-4) Run the server:
-   ```
-   python server.py
-   ```
+### 4 — Connect your IDE
 
-**IDE setup:** Add the MCP config for your IDE below. Replace `<PROJECT_PATH>` with the absolute path to your project and `your_token_here` with your token. Ensure the IDE uses the same Python where you ran `pip install -r requirements.txt`.
+Replace `<PROJECT_PATH>` with the absolute path to this repository and `your_token_here` with your token.
 
 <details>
 <summary><strong>Cursor</strong> — <code>.cursor/mcp.json</code> or <code>~/.cursor/mcp.json</code></summary>
@@ -113,10 +115,10 @@ The same token value must be used wherever the server is configured (IDE, env, c
   "mcpServers": {
     "google-tools": {
       "command": "python",
-      "args": ["<PROJECT_PATH>\\\\server.py"],
+      "args": ["<PROJECT_PATH>\\server.py"],
       "env": {
         "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
+        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\config.yaml"
       }
     }
   }
@@ -133,10 +135,10 @@ The same token value must be used wherever the server is configured (IDE, env, c
   "mcpServers": {
     "google-tools": {
       "command": "python",
-      "args": ["<PROJECT_PATH>\\\\server.py"],
+      "args": ["<PROJECT_PATH>\\server.py"],
       "env": {
         "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
+        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\config.yaml"
       }
     }
   }
@@ -146,9 +148,9 @@ The same token value must be used wherever the server is configured (IDE, env, c
 </details>
 
 <details>
-<summary><strong>VS Code (Copilot MCP)</strong> — <code>.vscode/mcp.json</code> or MCP: Open User Configuration</summary>
+<summary><strong>VS Code (Copilot MCP)</strong> — <code>.vscode/mcp.json</code> or <em>MCP: Open User Configuration</em></summary>
 
-> Uses `servers`, not `mcpServers`. Requires VS Code 1.102+ and Copilot enabled.
+> Uses `servers` (not `mcpServers`). Requires VS Code 1.102+ and Copilot enabled.
 
 ```json
 {
@@ -156,10 +158,10 @@ The same token value must be used wherever the server is configured (IDE, env, c
     "google-tools": {
       "type": "stdio",
       "command": "python",
-      "args": ["<PROJECT_PATH>\\\\server.py"],
+      "args": ["<PROJECT_PATH>\\server.py"],
       "env": {
         "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
+        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\config.yaml"
       }
     }
   }
@@ -169,7 +171,7 @@ The same token value must be used wherever the server is configured (IDE, env, c
 </details>
 
 <details>
-<summary><strong>Other IDEs</strong> — generic MCP config</summary>
+<summary><strong>Other IDEs</strong> — generic MCP stdio config</summary>
 
 Use the same `command` / `args` / `env`. The root key may be `mcpServers` or `servers`.
 
@@ -178,10 +180,10 @@ Use the same `command` / `args` / `env`. The root key may be `mcpServers` or `se
   "mcpServers": {
     "google-tools": {
       "command": "python",
-      "args": ["<PROJECT_PATH>\\\\server.py"],
+      "args": ["<PROJECT_PATH>\\server.py"],
       "env": {
         "MCP_AUTH_TOKEN": "your_token_here",
-        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\\\config.yaml"
+        "MCP_CONFIG_FILE": "<PROJECT_PATH>\\config.yaml"
       }
     }
   }
@@ -190,102 +192,252 @@ Use the same `command` / `args` / `env`. The root key may be `mcpServers` or `se
 
 </details>
 
-## Smoke check
-After the server is connected in your MCP client, call `get_gmail_profile()`.
-If OAuth is configured, it should return the authenticated Gmail address.
+### 5 — Smoke check
+After connecting, call `get_gmail_profile()` in your AI client.  
+It should return the authenticated Gmail address if OAuth is configured correctly.
 
-## Usage examples
+---
 
-### Basic operations
+## 📖 Usage Examples
+
+<details>
+<summary><strong>Basic operations</strong></summary>
+
 ```
-# Get your Gmail address (smoke test)
+# Verify authentication
 Tool: get_gmail_profile
-Result: Authenticated Gmail address: user@example.com
+→ Authenticated Gmail address: user@example.com
 
 # Search for files in Drive
 Tool: find_files
 Arguments: {"query": "name contains 'budget'"}
-Result: Found files:
-- Budget_2026.xlsx (ID: 1a2b3c...) [application/vnd.google-apps.spreadsheet]
+→ - Budget_2026.xlsx (ID: 1a2b3c...) [spreadsheet]
 
 # Read a Google Sheet
 Tool: read_sheet
-Arguments: {
-  "spreadsheet_id": "1a2b3c4d5e...",
-  "range_name": "Sheet1!A1:C10"
-}
-Result: Data from sheet (range Sheet1!A1:C10):
-| Name | Email | Status |
-| John | john@example.com | Active |
-...
+Arguments: {"spreadsheet_id": "1a2b3c4d5e...", "range_name": "Sheet1!A1:C10"}
+→ | Name | Email     | Status |
+  | John | j@corp.io | Active |
 
-# Create a draft email (safe by default)
+# Create a draft email (safe by default — never sends without draft_mode=false)
 Tool: send_email
-Arguments: {
-  "to": "colleague@example.com",
-  "subject": "Meeting notes",
-  "body_text": "Here are the notes from our meeting...",
-  "draft_mode": true
-}
-Result: EMAIL DRAFT CREATED (ID: r1234...)
-Email saved as DRAFT, not sent yet.
-To send: send_email(..., draft_mode=False)
+Arguments: {"to": "colleague@example.com", "subject": "Notes", "body_text": "...", "draft_mode": true}
+→ EMAIL DRAFT CREATED (ID: r1234...) — saved as draft, not sent.
 ```
 
-### Safety features
+</details>
+
+<details>
+<summary><strong>Resources — attach live data to context</strong></summary>
+
 ```
-# Destructive operations require confirmation
-Tool: delete_email
-Arguments: {"message_id": "18abc...", "confirm": false}
-Result: CONFIRMATION REQUIRED
-This will permanently delete email 18abc...
-To proceed, call this tool again with confirm=True
+# Recent Drive files (no arguments needed)
+Resource URI: gdrive://recent
 
-# Large operations use dry-run mode
-Tool: clear_range
-Arguments: {"spreadsheet_id": "1a2b...", "range_name": "Sheet1!A1:Z1000"}
-Result: DRY RUN: Large range detected (26,000 cells)
-Would clear range: Sheet1!A1:Z1000
-To proceed: clear_range(..., confirm=True)
+# Unread inbox snapshot
+Resource URI: gmail://inbox
+
+# This week's calendar
+Resource URI: gcalendar://upcoming
+
+# Specific spreadsheet range
+Resource URI: gsheets://1a2b3c4d5e.../Sheet1!A1:D20
+
+# Specific Google Doc
+Resource URI: gdocs://1a2b3c4d5e...
 ```
 
-## STDIO logging note
-The server logs to stderr (not stdout) so it never interferes with the
-STDIO MCP transport. If a `log_file` is configured, logs are also written to that file.
+</details>
 
-## Configuration
-You can use a combined approach:
-- ENV: `MCP_AUTH_TOKEN`, `GOOGLE_CLIENT_SECRETS_FILE`, `GOOGLE_TOKEN_FILE`,
-  `GOOGLE_BACKUP_DIR`, `GOOGLE_LOG_FILE`, `MCP_CONFIG_FILE`.
-- Config file: `client_secrets_file`, `token_file`, `backup_dir`, `log_file`, `scopes`.
+<details>
+<summary><strong>Prompts — one-click AI workflows</strong></summary>
 
-If `MCP_CONFIG_FILE` is set, its values are used as defaults and ENV overrides them.
+| Prompt | What it does |
+|--------|-------------|
+| `summarize_inbox` | Fetches recent Gmail messages → ready for AI summary |
+| `analyze_spreadsheet` | Reads a sheet range → ready for AI analysis / charts |
+| `plan_week` | Loads calendar events → ready for scheduling suggestions |
+| `search_drive` | Searches Drive files → ready for organisation advice |
 
-## Environment variables
-Set environment variables in your shell or OS before starting the server,
-or pass them in the `env` block of your IDE's MCP config (see `docs/IDE_SETUP.md`).
+</details>
 
-Windows PowerShell:
-- `setx MCP_AUTH_TOKEN "your_token"`
-- `setx MCP_CONFIG_FILE "D:\path\to\config.yaml"`
-- `setx GOOGLE_CLIENT_SECRETS_FILE "D:\path\to\oauth.keys.json"`
+---
 
-macOS/Linux (bash/zsh):
-- `export MCP_AUTH_TOKEN="your_token"`
-- `export MCP_CONFIG_FILE="/path/to/config.yaml"`
-- `export GOOGLE_CLIENT_SECRETS_FILE="/path/to/oauth.keys.json"`
+## 🛡 Safety Features
 
-## Safety and responsibility
-Some operations require confirmation or run in dry-run mode:
-- Deleting emails, archiving, making files public.
-- Clearing large ranges in Sheets.
-See: `docs/SECURITY.md`.
+| Feature | Tools affected |
+|---------|---------------|
+| `confirm=true` required | `delete_email`, `gmail_archive`, `calendar_create_meeting`, `drive_revoke_public`, `doc_fill_template` |
+| `dry_run=true` by default | `batch_delete_emails`, `sheet_find_replace` |
+| Auto dry-run for large ranges | `clear_range` (prompts confirmation above threshold) |
+| Draft mode by default | `send_email` (never sends unless `draft_mode=false`) |
+| Public sharing blocked | `share_file` blocks `type=anyone` unless `allow_public=true` |
+| Tool annotations | Every tool carries `readOnlyHint` / `destructiveHint` for client-side warnings |
 
-You are responsible for understanding the risks and the consequences of actions
-performed by this server. Use it at your own discretion and follow your
-organization's security policies.
+> ⚠️ **Your AI agent has access to all data you authorize via OAuth.** Use read-only scopes for sensitive accounts. See [docs/SECURITY.md](docs/SECURITY.md).
 
-## Documentation
-- [LEARN.md](LEARN.md) — Step-by-step guide to building an MCP server like this one
-- English: `docs/AUTH_SETUP.md`, `docs/TOOLS_REFERENCE.md`, `docs/SECURITY.md`, `docs/IDE_SETUP.md`
-- Russian: `docs/ru/AUTH_SETUP.md`, `docs/ru/TOOLS_REFERENCE.md`, `docs/ru/SECURITY.md`, `docs/ru/IDE_SETUP.md`
+---
+
+## ⚙️ Configuration Reference
+
+### `config.yaml` keys
+
+| Key | Env override | Default | Description |
+|-----|-------------|---------|-------------|
+| `client_secrets_file` | `GOOGLE_CLIENT_SECRETS_FILE` | — | Path to OAuth JSON downloaded from Google Cloud |
+| `token_file` | `GOOGLE_TOKEN_FILE` | `~/.google/token.json` | Where the OAuth token is saved after first login |
+| `mcp_auth_token` | `MCP_AUTH_TOKEN` | — | **Required.** Token to activate the server |
+| `log_file` | `GOOGLE_LOG_FILE` | stderr only | Path to a log file (optional) |
+| `log_level` | `GOOGLE_LOG_LEVEL` | `INFO` | Log verbosity: `DEBUG` / `INFO` / `WARNING` / `ERROR` |
+| `backup_dir` | `GOOGLE_BACKUP_DIR` | — | Directory for Apps Script auto-backups |
+| `scopes` | — | full access | List of OAuth scopes (see security docs) |
+
+> `MCP_CONFIG_FILE` — points to your `config.yaml`. Set this in the IDE `env` block.  
+> Environment variables always override config file values.
+
+<details>
+<summary>Minimal <code>config.yaml</code> example</summary>
+
+```yaml
+client_secrets_file: "C:\\Users\\you\\.google\\oauth.keys.json"
+token_file: "C:\\Users\\you\\.google\\token.json"
+mcp_auth_token: "MySecretToken_2026!"
+log_level: "INFO"
+```
+
+</details>
+
+---
+
+## 📦 Full Tool List
+
+<details>
+<summary>📁 Drive (8 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `find_files` | read | Search by name or Drive query |
+| `drive_search_advanced` | read | Full Drive query syntax with result limit |
+| `drive_list_permissions` | read | List file permissions |
+| `create_folder` | write | Create a folder |
+| `move_file` | write | Move a file to a folder |
+| `drive_copy_file` | write | Copy a file |
+| `share_file` | write | Share with user/group/domain/anyone |
+| `drive_revoke_public` | destructive | Revoke public access (`confirm=true`) |
+
+</details>
+
+<details>
+<summary>📊 Sheets (11 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `read_sheet` | read | Read a cell range |
+| `get_spreadsheet_meta` | read | Spreadsheet metadata |
+| `sheet_export_csv` | read | Export range to CSV |
+| `append_row` | write | Append a row |
+| `update_sheet` | write | Write rows to a range |
+| `create_spreadsheet` | write | Create a new spreadsheet |
+| `add_sheet` | write | Add a new tab/sheet |
+| `sheet_create_filter_view` | write | Create a filter view |
+| `sheet_create_named_range` | write | Create a named range |
+| `sheet_find_replace` | write | Find & replace (`dry_run=true` by default) |
+| `clear_range` | destructive | Clear a range (auto dry-run for large ranges) |
+
+</details>
+
+<details>
+<summary>📄 Docs (5 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `read_doc` | read | Read document text |
+| `doc_export_pdf` | read | Export document as binary PDF |
+| `create_doc` | write | Create a new document |
+| `append_to_doc` | write | Append text |
+| `doc_fill_template` | destructive | Fill template placeholders (`confirm=true`) |
+
+</details>
+
+<details>
+<summary>📧 Gmail (11 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `get_gmail_profile` | read | Get authenticated email address |
+| `list_emails` | read | List emails (with optional search query) |
+| `read_email` | read | Read a single email |
+| `gmail_search_and_summarize` | read | Search and return brief summary |
+| `create_draft` | write | Create a draft |
+| `send_email` | write | Send or draft an email (`draft_mode=true` by default) |
+| `send_draft` | write | Send an existing draft |
+| `gmail_label_apply` | write | Apply a label (`dry_run=true` by default) |
+| `gmail_archive` | write | Archive a message (`confirm=true`) |
+| `delete_email` | destructive | Delete an email (`confirm=true`) |
+| `batch_delete_emails` | destructive | Delete multiple emails (`dry_run=true` by default) |
+
+</details>
+
+<details>
+<summary>📅 Calendar (4 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `list_events` | read | List upcoming events |
+| `calendar_find_free_slots` | read | Find free time slots |
+| `create_event` | write | Create an event |
+| `calendar_create_meeting` | write | Create meeting with attendees (`confirm=true`) |
+
+</details>
+
+<details>
+<summary>⚙️ Apps Script (6 tools)</summary>
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `get_script_content` | read | Read project files |
+| `create_script_project` | write | Create a new project |
+| `prepare_script_update` | write | Stage an update, get `operation_id` |
+| `execute_operation` | write | Execute a staged update (with auto-backup) |
+| `cancel_operation` | write | Cancel a pending staged update |
+| `restore_script_backup` | write | Restore from auto-backup |
+
+</details>
+
+---
+
+## 📚 Documentation
+
+### 🇬🇧 English
+
+| Document | Description |
+|----------|-------------|
+| [AUTH_SETUP.md](docs/AUTH_SETUP.md) | Step-by-step Google OAuth setup guide |
+| [TOOLS_REFERENCE.md](docs/TOOLS_REFERENCE.md) | Full tools, resources, and prompts reference |
+| [SECURITY.md](docs/SECURITY.md) | OAuth scopes, safety features, best practices |
+| [IDE_SETUP.md](docs/IDE_SETUP.md) | Cursor, Windsurf, VS Code, and other IDE setup |
+| [LEARN.md](LEARN.md) | How this MCP server was built (step-by-step tutorial) |
+
+### 🇷🇺 На русском
+
+| Документ | Описание |
+|----------|----------|
+| [AUTH_SETUP.md](docs/ru/AUTH_SETUP.md) | Пошаговая настройка Google OAuth |
+| [TOOLS_REFERENCE.md](docs/ru/TOOLS_REFERENCE.md) | Полный справочник инструментов, ресурсов и промптов |
+| [SECURITY.md](docs/ru/SECURITY.md) | OAuth scopes, защиты, рекомендации |
+| [IDE_SETUP.md](docs/ru/IDE_SETUP.md) | Настройка Cursor, Windsurf, VS Code и других IDE |
+
+---
+
+## ⚠️ Responsibility notice
+
+You are responsible for understanding the risks and consequences of operations performed by this server.  
+Use it at your own discretion and follow your organization's security policies.
+
+---
+
+<div align="center">
+
+Built with ❤️ using [Model Context Protocol](https://modelcontextprotocol.io) · [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+
+</div>

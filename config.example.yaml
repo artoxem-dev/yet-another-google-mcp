@@ -13,6 +13,10 @@ log_file: "C:\\Users\\your_user\\.google\\mcp_operations.log"
 # MCP authentication token (change to a secure random value)
 mcp_auth_token: "change_me"
 
+# Log level: DEBUG, INFO, WARNING, ERROR (default: INFO)
+# Can also be set via the GOOGLE_LOG_LEVEL environment variable
+log_level: "INFO"
+
 # OAuth scopes define what data the server can access
 # Default: Full access to all services (good for testing)
 # For production: Review docs/SECURITY.md for minimal/read-only options

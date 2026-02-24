@@ -1,4 +1,5 @@
 import json
+import logging as _logging
 import os
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -22,6 +23,7 @@ class Config:
     log_file: Optional[str]
     mcp_auth_token: Optional[str]
     scopes: List[str]
+    log_level: int = _logging.INFO
 
 
 def _default_path(*parts: str) -> str:
@@ -76,6 +78,11 @@ def load_config() -> Config:
     scopes = file_config.get("scopes") or DEFAULT_SCOPES
     scopes = list(scopes)
 
+    log_level_str = os.environ.get(
+        "GOOGLE_LOG_LEVEL", str(file_config.get("log_level", "INFO"))
+    )
+    log_level = getattr(_logging, log_level_str.upper(), _logging.INFO)
+
     return Config(
         client_secrets_file=client_secrets_file,
         token_file=token_file,
@@ -83,4 +90,5 @@ def load_config() -> Config:
         log_file=log_file,
         mcp_auth_token=mcp_auth_token,
         scopes=scopes,
+        log_level=log_level,
     )
