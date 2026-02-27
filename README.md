@@ -93,13 +93,14 @@ cp config.example.yaml config.yaml
 <details>
 <summary>💡 How to create <code>MCP_AUTH_TOKEN</code></summary>
 
-`MCP_AUTH_TOKEN` is a secret string you choose. The server checks it is set before running — this prevents accidental starts without explicit setup.
+`MCP_AUTH_TOKEN` is a secret string you choose. You can think of it as a **local activation key for this MCP server**, not as a network security layer or authentication mechanism.
 
+- The server only checks that this token is configured before it starts handling tools — this is an extra safety step to avoid accidental runs without explicit setup.
 - Invent any random string, e.g. `MySecretToken_2026!` or use a password generator.
 - Recommended length: 16+ characters. Avoid reusing passwords.
 - Set it in `config.yaml` → `mcp_auth_token: "your_token"` **or** as the env var `MCP_AUTH_TOKEN`.
 
-The token is never sent anywhere — it is only checked locally.
+The token is never sent anywhere — it is only checked locally inside the server process. It does **not** restrict what your AI agent can do once the server is running. For more details, see `docs/SECURITY.md` / `docs/ru/SECURITY.md`.
 
 </details>
 
@@ -406,6 +407,7 @@ log_level: "INFO"
 
 ---
 
+<a id="documentation"></a>
 ## 📚 Documentation
 
 ### 🇬🇧 English
@@ -418,6 +420,7 @@ log_level: "INFO"
 | [IDE_SETUP.md](docs/IDE_SETUP.md) | Cursor, Windsurf, VS Code, and other IDE setup |
 | [LEARN.md](LEARN.md) | How this MCP server was built (step-by-step tutorial) |
 
+<a id="документация"></a>
 ### 🇷🇺 На русском
 
 | Документ | Описание |

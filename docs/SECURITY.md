@@ -21,6 +21,10 @@ All tool calls require `MCP_AUTH_TOKEN` to be configured (environment variable o
 that ensures the operator has consciously enabled the server before it becomes
 operational. It does **not** perform per-request client authentication.
 
+You can think of `MCP_AUTH_TOKEN` as a **local “activation key” for this MCP
+server** — an extra safeguard against accidental startup without configuration,
+not a security boundary or network protection mechanism.
+
 For STDIO-based MCP servers the transport is inherently local (the IDE launches the
 server process directly), so there is no network endpoint to protect. The token
 simply prevents accidental starts without a deliberate setup step.
